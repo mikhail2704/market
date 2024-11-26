@@ -191,6 +191,22 @@
 }
 .modal-container img {
   width: auto;
-  height: 450px; /* фиксируем высоту, ширина подстраивается */
+  height: 450px;
   object-fit: contain;
+}
+.delete-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 10px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }

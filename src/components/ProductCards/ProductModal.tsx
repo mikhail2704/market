@@ -47,26 +47,67 @@ const ProductModal: React.FC<ProductModalProps> = ({
   const addAdditives = (additive: additivesType) => {
     const { nameAdditives, price } = additive;
 
-    if (oneProduct.additive.includes(nameAdditives)) {
-      setOneProduct({
-        ...oneProduct,
-        additive: oneProduct.additive.filter((item) => item !== nameAdditives),
-        priceAdditives: oneProduct.priceAdditives - price,
-      });
+    const existingAdditive = oneProduct.additive.find(
+      (item) => item.nameAdditives === nameAdditives
+    );
+
+    if (existingAdditive) {
+      if (existingAdditive.count < 2) {
+        setOneProduct({
+          ...oneProduct,
+          additive: oneProduct.additive.map((item) =>
+            item.nameAdditives === nameAdditives
+              ? { ...item, count: item.count + 1 }
+              : item
+          ),
+          priceAdditives: oneProduct.priceAdditives + price,
+        });
+      }
     } else {
       setOneProduct({
         ...oneProduct,
-        additive: [...oneProduct.additive, nameAdditives],
+        additive: [...oneProduct.additive, { nameAdditives, price, count: 1 }],
         priceAdditives: oneProduct.priceAdditives + price,
-
       });
     }
   };
 
   const calculatePrice = () => {
-    return (oneProduct.priceAdditives + price) * count;
+    const additivesPrice = oneProduct.additive.reduce(
+      (total, item) => total + item.price * item.count,
+      0
+    );
+    return (additivesPrice + price) * count;
   };
   const totalPriceProduct = calculatePrice();
+
+  const removeAdditive = (additive: additivesType) => {
+    const { nameAdditives, price } = additive;
+
+    const existingAdditive = oneProduct.additive.find(
+      (item) => item.nameAdditives === nameAdditives
+    );
+
+    if (existingAdditive && existingAdditive.count > 1) {
+      setOneProduct({
+        ...oneProduct,
+        additive: oneProduct.additive.map((item) =>
+          item.nameAdditives === nameAdditives
+            ? { ...item, count: item.count - 1 }
+            : item
+        ),
+        priceAdditives: oneProduct.priceAdditives - price,
+      });
+    } else if (existingAdditive && existingAdditive.count === 1) {
+      setOneProduct({
+        ...oneProduct,
+        additive: oneProduct.additive.filter(
+          (item) => item.nameAdditives !== nameAdditives
+        ),
+        priceAdditives: oneProduct.priceAdditives - price,
+      });
+    }
+  };
 
   const handleAddToCart = () => {
     dispatch(
@@ -99,6 +140,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
             additives={additives}
             addAdditives={addAdditives}
             oneProduct={oneProduct}
+            removeAdditive={removeAdditive}
           />
           <p>Убрать:</p>
           <label>

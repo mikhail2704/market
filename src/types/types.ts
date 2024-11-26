@@ -17,10 +17,10 @@ export type initialStateType = {
 export type additivesType = {
   nameAdditives: string;
   price: number;
-  additivesСount?: number;
+  count: number;
 };
 export type oneProductType = {
-  additive: string[];
+  additive: additivesType[];
   priceAdditives: number;
   nameProduct: string;
   count: number;
@@ -39,6 +39,7 @@ export type AdditivesListType = {
   additives: additivesType[];
   addAdditives: (additive: additivesType) => void;
   oneProduct: oneProductType;
+  removeAdditive: (additive: additivesType) => void;
 };
 export type cartBuy = {
   product: oneProductType;
